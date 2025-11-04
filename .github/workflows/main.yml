@@ -1,1 +1,48 @@
+name: Manual Node Build
+
+on:
+  workflow_dispatch:   # Allows manual trigger
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step 2: Setup Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18     # Change version if required
+
+      # Step 3: Install Dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # Step 4: Run Unit Tests
+      - name: Run Unit Tests
+        run: npm test
+
+      # Step 5: Build the Application
+      - name: Build Application
+        run: npm run build
+
+      # Step 6: List build artifacts
+      - name: List Build Artifacts
+        run: |
+          echo "Build artifacts in dist or build folder:"
+          ls -R ./build || ls -R ./dist || echo "No dist/build folder found"
+
+      # Step 7: Upload Build Artifact
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-build-artifact
+          path: |
+            build/**
+            dist/**
+            !node_modules/**
 
